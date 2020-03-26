@@ -1,5 +1,4 @@
 import pandas as pd
-import math
 
 # prepare training data array consisting of meme id's, binary identification of top caption v bottom caption, and the characters in each caption
 raw_data = pd.read_csv("Meme_training_data.csv")
@@ -11,10 +10,12 @@ training_data = []
 #populate the training_data array
 def process_string(string,memeid,topOrBottom):
     
+    memeid = str(memeid).zfill(4) #pad the memeid with zeroes before hand to make all id's the same length
+    
     #if the dataframe held a NaN float value there (intentionally), it was a blank caption
     if (isinstance(string,float)):
         #then, there is only 1 element, with the characters_seen being blank and the next_character being |
-        new_entry_first_string = ("%d %d %s" %(memeid,topOrBottom," "))
+        new_entry_first_string = ("%s %d %s" %(memeid,topOrBottom," "))
         next_character = "|"
 
         training_data.append([new_entry_first_string,next_character])
@@ -24,7 +25,7 @@ def process_string(string,memeid,topOrBottom):
         characters_seen = ""
         for j in range(len(string)+1):
             #i is the memeid, topOrBottom says 0 if its a top caption, 1 if its a bottom caption
-            new_entry_first_string = ("%d %d %s" %(memeid,topOrBottom,characters_seen))
+            new_entry_first_string = ("%s %d %s" %(memeid,topOrBottom,characters_seen))
             
             #if the new character is a space, or if the string ended, add |
             next_character = ""
@@ -53,6 +54,6 @@ for i in range(len(raw_data)):
 
 
 #check if populating array was ok
-num_rows_to_check = 70
-for i in range(num_rows_to_check):
-    print(training_data[i],"\n")
+test_file = open("check_training_data_arr.txt","w")
+for i in training_data:
+    print(i,"\n",file = test_file)
