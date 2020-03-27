@@ -1,4 +1,10 @@
 import pandas as pd
+from keras import Sequential
+from keras.preprocessing.sequence import pad_sequences
+from keras.callbacks import ModelCheckpoint
+from keras.layers import Dense, Dropout, GlobalMaxPooling1D, Conv1D, MaxPooling1D, Embedding
+from keras.layers.normalization import BatchNormalization
+import numpy as np
 
 # prepare training data array consisting of meme id's, binary identification of top caption v bottom caption, and the characters in each caption
 raw_data = pd.read_csv("Meme_training_data.csv")
@@ -54,6 +60,13 @@ for i in range(len(raw_data)):
 
 
 #check if populating array was ok
-test_file = open("check_training_data_arr.txt","w")
-for i in training_data:
-    print(i,"\n",file = test_file)
+def check_training_data_arr():
+    test_file = open("check_training_data_arr.txt","w")
+    for i in training_data:
+        print(i,"\n",file = test_file)
+
+#check_training_data_arr()
+
+
+
+# tensorize the data, reshape to fit into the CNN
