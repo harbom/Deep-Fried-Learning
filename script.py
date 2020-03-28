@@ -16,7 +16,9 @@ character_to_int_mapping = []
 
 #populate the training_data array
 def process_string(string,memeid,topOrBottom):
-    
+    #append numbers of the memeid to the character_int mapping array
+    if memeid not in character_to_int_mapping:
+        character_to_int_mapping.append(str(memeid))
     memeid = str(memeid).zfill(4) #pad the memeid with zeroes before hand to make all id's the same length
     
     #if the dataframe held a NaN float value there (intentionally), it was a blank caption
@@ -69,12 +71,32 @@ def check_training_data_arr():
     for i in training_data:
         print(i,"\n",file = test_file)
 
-#check_training_data_arr()
+check_training_data_arr()
 
 
 
 # tensorize the data, reshape to fit into the CNN
-main_string = [i[0] for i in training_data]
-next_string = [i[1] for i in training_data]
+main_texts = [i[0] for i in training_data]
+labels = [i[1] for i in training_data]
 
+character_to_int_mapping.append(" ") #spaces weren't ever accounted for when populating training_data array
 #print(character_to_int_mapping)
+
+#reshape the texts and lables array to be indices of the character_to_int_mapping array
+
+#transform the main texts
+transformed_main_texts = []
+for row in main_texts:
+    transformed_row = []
+    for char in row:
+        transformed_row.append(character_to_int_mapping.index(char))
+    transformed_main_texts.append(transformed_row)
+
+#transform the labels
+transformed_labels = []
+for entry in labels: #entry will just be a 1 character string, its the 'next character'
+    transformed_labels.append(character_to_int_mapping.index(entry))
+
+#testing
+#print(transformed_main_texts[0:70])
+#print(transformed_labels[0:70])
