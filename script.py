@@ -12,6 +12,7 @@ raw_data = pd.read_csv("Meme_training_data.csv")
 #print(raw_data.head())
 
 training_data = []
+character_to_int_mapping = []
 
 #populate the training_data array
 def process_string(string,memeid,topOrBottom):
@@ -40,6 +41,9 @@ def process_string(string,memeid,topOrBottom):
             else:
                 next_character = string[j]
 
+            #append to the character to int mapping array
+            if not(next_character in character_to_int_mapping):
+                character_to_int_mapping.append(next_character)
             #append both strings to a new array, and add that array to training_data
             training_data.append([new_entry_first_string,next_character])
 
@@ -70,3 +74,7 @@ def check_training_data_arr():
 
 
 # tensorize the data, reshape to fit into the CNN
+main_string = [i[0] for i in training_data]
+next_string = [i[1] for i in training_data]
+
+#print(character_to_int_mapping)
