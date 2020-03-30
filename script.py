@@ -71,7 +71,7 @@ def check_training_data_arr():
     for i in training_data:
         print(i,"\n",file = test_file)
 
-check_training_data_arr()
+#check_training_data_arr()
 
 
 
@@ -99,4 +99,36 @@ for entry in labels: #entry will just be a 1 character string, its the 'next cha
 
 #testing
 #print(transformed_main_texts[0:70])
-#print(transformed_labels[0:70])
+#print(transformed_labels)
+
+#pad the main texts with 0's so they're the same length using keras.tf pad_sequences
+padding_length = 128
+main_data = pad_sequences(transformed_main_texts)
+
+#print(main_data)[0:70]
+
+#randomize training data (stats :pog:)
+indices = np.arange(main_data.shape[0]) #gets array of indices from len(main_data)
+np.random.shuffle(indices) #shuffles indices
+main_data = main_data[indices] #assigns a new order for the array
+for i in range(len(indices)):
+    transformed_labels[i] = transformed_labels[indices[i]]
+
+#ratios help the model cross reference it's predictions to memes its not referencing in the training set
+ratio = .2 if main_data.shape[0] < 1000000 else .02
+num_val_samples = int(ratio * main_data.shape[0])
+
+#split the data based on the ratios
+x_train = main_data[:-num_val_samples] #the first to the last {num_val_samples}'th samples
+y_train = transformed_labels[:-num_val_samples] 
+x_test = main_data[-num_val_samples:] #the {num_val_samples}'th sample to the end
+y_test = transformed_labels[-num_val_samples]
+
+#testing
+#print(x_train)
+#print(x_test)
+#print(y_train)
+#print(y_test)
+
+#end preprocessing
+#-------------------------------
