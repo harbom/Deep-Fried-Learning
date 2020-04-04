@@ -166,3 +166,8 @@ CNNmodel.add(Dense(len(transformed_labels), activation='softmax'))              
 
 CNNmodel.compile(loss='sparse_categorical_crossentropy', optimizer='rmsprop', metrics=['acc'])         #compile the CNNmodel: rmsprop optimizer is good optimizer, the loss is specific to our example when we optimize for choosing the best category among 2 labels (top/bottom captions). sparse because the labels are ints between 0 and 70 (good for memory)
 #CNNmodel.summary()
+
+
+#should come back to add a GAN model for cross comparison after we get the CNN model up and running
+#end model-creation(?)
+#----------------------------------------------------------
