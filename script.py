@@ -132,3 +132,42 @@ y_test = transformed_labels[-num_val_samples]
 
 #end preprocessing
 #-------------------------------
+#model creation
+
+#CNN model
+EMBEDDING_DIM = 16
+
+CNNmodel = Sequential()
+CNNmodel.add(Embedding(len(character_to_int_mapping) + 1, EMBEDDING_DIM, input_length=padding_length)) #Embedding layer to convert the 128 char long array to 128x16 matrix: helps convert to integers instead of floats
+CNNmodel.add(Conv1D(1024, 5, activation='relu', padding='same'))                                       #Conv1D layers with 1024 output filters, kernel size of 5 (length of convolution filter): looks at constructing words from chars
+CNNmodel.add(BatchNormalization())                                                                     #BatchNormalization so that the next layers are normalized based on the mean/variance for current layer, helps improving training speed
+CNNmodel.add(MaxPooling1D(2))                                                                          #Pooling reduces spatial size of features (by 2 in this case) to help computation in the network
+CNNmodel.add(Dropout(0.25))                                                                            #Drops out a random 25% of data to avoid overfit
+CNNmodel.add(Conv1D(1024, 5, activation='relu', padding='same'))                                       #relu activation is basically max(0,input), is good for a function that accepts the weighted values and outputs a direct value to an output node
+CNNmodel.add(BatchNormalization())                                                                     #same padding ensures that the dimensions of the output layer match the dimensions of the input layer
+CNNmodel.add(MaxPooling1D(2))
+CNNmodel.add(Dropout(0.25))
+CNNmodel.add(Conv1D(1024, 5, activation='relu', padding='same'))
+CNNmodel.add(BatchNormalization())
+CNNmodel.add(MaxPooling1D(2))
+CNNmodel.add(Dropout(0.25))
+CNNmodel.add(Conv1D(1024, 5, activation='relu', padding='same'))
+CNNmodel.add(BatchNormalization())
+CNNmodel.add(MaxPooling1D(2))
+CNNmodel.add(Dropout(0.25))
+CNNmodel.add(Conv1D(1024, 5, activation='relu', padding='same'))
+CNNmodel.add(BatchNormalization())
+CNNmodel.add(GlobalMaxPooling1D())                                                                     #GlobalMaxPooling1D also shrinks layer, but automatically chooses how to do it (instead of the param of 2 in previous calls)
+CNNmodel.add(Dropout(0.25))
+CNNmodel.add(Dense(1024, activation='relu'))
+CNNmodel.add(BatchNormalization())
+CNNmodel.add(Dropout(0.25))
+CNNmodel.add(Dense(len(transformed_labels), activation='softmax'))                                           #Dense houses the activation function, specifies the softmax activation function (nonlinear)
+
+CNNmodel.compile(loss='sparse_categorical_crossentropy', optimizer='rmsprop', metrics=['acc'])         #compile the CNNmodel: rmsprop optimizer is good optimizer, the loss is specific to our example when we optimize for choosing the best category among 2 labels (top/bottom captions). sparse because the labels are ints between 0 and 70 (good for memory)
+#CNNmodel.summary()
+
+
+#should come back to add a GAN model for cross comparison after we get the CNN model up and running
+#end model-creation(?)
+#----------------------------------------------------------
